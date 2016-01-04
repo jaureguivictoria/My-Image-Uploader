@@ -1,0 +1,189 @@
+    
+    var options =
+    {
+        thumbBox: '.thumbBox',
+        spinner: '.spinner',
+        imgSrc: '{{ asset("bundles/uakikanfcbackend/images/big-thumbnail.jpg")}}'
+    }
+    var cropper = $('.imageBox').cropbox(options);
+    
+    $('#{{file_selector}}').on('change', function(){
+        $(".crop-container").show();
+        $("#upload_file_div").hide();
+        $("#dnd-container").hide();
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            options.imgSrc = e.target.result;
+            cropper = $('.imageBox').cropbox(options);
+        }
+        reader.readAsDataURL(this.files[0]);
+        this.files = [];
+    })
+    
+    $('#btnSave').on('click', function(){
+        $.fancybox.close();
+        var img = cropper.getDataURL();
+        $("#{{img_preview_selector}}").attr("src", img);
+        uploadToServer();        
+    })
+    
+    $('#btnZoomIn').on('click', function(){
+        cropper.zoomIn();
+    })
+    
+    $('#btnZoomOut').on('click', function(){
+        cropper.zoomOut();
+    });   
+     
+    $('#btnRemove').on('click', function(){
+        cleanImageUploader();
+        $(".crop-container").hide();
+        $("#dnd-container").show();
+        $("#drop-files").show();
+        $("#upload_file_div").show();
+        $("html, body").animate({ scrollTop: 0 }, "slow");        
+    });    
+    
+    $("#upload-button .upload").on('click', function(){
+        var bg = $("div.image").css("background-image");
+        bg = bg.replace('url(','').replace(')','');
+		uploadTempToServer(bg);
+    });
+    
+    $("#dropped-files").on('change', function(){
+        var bg = $("div.image").css("background-image");
+        bg = bg.replace('url(','').replace(')','');
+        
+        $(".crop-container").show();
+        $("#upload_file_div").hide();
+        $("#dnd-container").hide();
+        
+        var options = {
+            thumbBox: '.thumbBox',
+            spinner: '.spinner',
+            imgSrc: bg
+        }
+        cropper = $('.imageBox').cropbox(options);
+    });
+    
+    $("#btnEdit").on("click", function(){
+        cleanImageUploader()
+        $("#div_preview").hide();
+        $("#upload_file_div").show();
+        $("#dnd-container").show();
+        $(".crop-container").hide();
+        $("#drop-files").show();
+    });
+    
+    $("#btnCancel").on("click", function(){
+        reChoose();    
+    });
+    
+    $("#upload-button > a.delete").on("click", function(){
+        reChoose();    
+    });
+    
+    function reChoose(){
+		$.fancybox.close();
+        cleanImageUploader();
+        $("#upload_file_div").hide();
+        $("#dnd-container").hide();
+        $(".crop-container").hide();
+        $("#div_preview").show();        
+	}
+    
+    $("#btnReset").on("click", function(){
+        $("#temp_image_id").val(0);
+        cleanImageUploader();        
+        default_image_src = "{{ asset('bundles/uakikanfcbackend/images/big-thumbnail.jpg')}}";
+        $("#{{img_preview_selector}}").attr("src", default_image_src);
+    });
+    
+    function cleanImageUploader(){
+        cropper.resetDropzone();
+        cropper.setBackground();
+    }
+    
+    function uploadToServer(){
+        var form = $('#{{form_id}}');
+        
+        var formData = new FormData($('#{{form_id}}')[0]);
+        formData.append("image_base64", $("#{{img_preview_selector}}").attr("src"));
+        $.ajax({
+            url : "{{url('backend_temp_image_upload')}}",
+            type : 'POST',
+            cache: false,
+            contentType: false,
+            processData: false,
+            async: false,
+            data : formData,
+            beforeSend: function(){
+                $.fancybox.showLoading();
+            },
+            success : function(response) {
+                var temp_image = JSON.parse(response);
+                if(temp_image.status){
+                    cleanImageUploader();
+                    $("#upload_file_div").hide();
+                    $("#dnd-container").hide();
+                    $(".crop-container").hide();
+                    $("#div_preview").show(); 
+                    $("#{{img_preview_selector}}").attr("src", "/upload/temp/"+temp_image.temp_path);
+                    $("#temp_image_id").val(temp_image.temp_id);
+                    $("#del_temp_img").val("");
+                } else {
+                    $.fancybox("<p class='align-center'>{{'fileapi.error'|trans}}</p>");
+                }
+            },
+            complete: function(){
+                $.fancybox.hideLoading();
+            },
+            error : function(request, status, error) {
+                alert('error=' + error + '\nrequest=' + request + '\nstatus=' + status);
+            }
+        });
+    
+    }
+    
+    function uploadTempToServer(data64){
+        var form = $('#{{form_id}}');
+        
+        var formData = new FormData($('#{{form_id}}')[0]);
+        formData.append("image_base64", data64);
+        $.ajax({
+            url : "{{url('backend_drop_temp_image_upload')}}",
+            type : 'POST',
+            cache: false,
+            contentType: false,
+            processData: false,
+            async: false,
+            data : formData,
+            beforeSend: function(){
+                $.fancybox.showLoading();
+            },
+            success : function(response) {
+                var temp_image = JSON.parse(response);
+                if(temp_image.status){
+					var options =	{
+						thumbBox: '.thumbBox',
+						spinner: '.spinner',
+						imgSrc: '/upload/temp/'+temp_image.temp_path
+					}
+					cropper = $('.imageBox').cropbox(options);
+					$("#dnd-container").hide();
+					$("#del_temp_img").val(temp_image.temp_id);
+					$(".crop-container").show();
+
+                } else {
+                    $.fancybox("<p class='align-center'>{{'fileapi.error'|trans}}</p>");
+                }
+            },
+            complete: function(){
+                $.fancybox.hideLoading();
+            },
+            error : function(request, status, error) {
+                alert('error=' + error + '\nrequest=' + request + '\nstatus=' + status);
+            }
+        });
+    
+    }

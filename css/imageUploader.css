@@ -1,0 +1,357 @@
+#upload_file_div > .dashed-top{
+    margin-top: 15px;
+}
+
+#upload_file_div > .nicer-input { 
+	clear:both;
+	margin-top: 15px;
+}
+
+#div_preview {
+	margin-top: 5px;
+}
+#div_preview > img{
+    max-width: 198px;
+    margin: auto;
+}
+
+#div_preview > a{
+    float:right;
+    clear: both;
+    margin: 5px;
+}
+
+.crop-container > a{
+    float:right;
+    clear: both;
+    margin: 10px 10px 10px 10px;
+}
+
+/* Drag and drop */
+
+#drop-files {
+	background: url(../images/big-thumbnail.jpg) no-repeat center;
+    /*margin-bottom: 15px;*/
+    margin: auto;
+	width: 230px;
+	height: 230px;
+	border-radius: 10px;
+	border: 4px dashed rgba(0,0,0,0.2);
+	padding: 16px 0 0 0;
+	text-align: center;
+	/*margin: 0 20px 20px 0;*/
+}
+
+#drop-files > span#errorsize{
+    margin-left: 9%;
+    font-size: 21px;
+}
+
+#drop-files > span#errormsg{
+    margin-left: 15%;
+}
+
+#drop-files > span{
+    text-align: center;
+	font-size: 16px;
+    font-weight: bold;    
+    color: lightgray;
+}
+
+#dropped-files {
+	margin: auto;
+	height: 227px;
+}
+
+#upload-button {
+	position: absolute;
+	top: 87px;
+	z-index: 9999;
+	/*width: 210px;*/
+	display: none;
+    margin-left: 8%;    
+}
+
+#dropped-files .image {
+	height: 200px;
+	width: 264px;
+	border: 4px solid #fff;
+	position: absolute;
+	box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+	background: #fff;
+	border-radius: 4px;
+	overflow: hidden;
+    margin-left: 23%;
+    margin-top: 3%;
+}
+
+#upload-button .ss-upload {
+	font-size: 0.7em;
+}
+
+
+#upload-button a {
+	text-decoration: none;
+	color: #fff;
+	font-weight: bold;
+	box-shadow: 0 0 1000px 62px rgba(255, 255, 255, 1), inset 0 -35px 40px -10px #0A9FCA;
+	font-size: 20px;
+	padding: 10px 20px;
+	background-color: #4bc1e3;
+	border-radius: 10px;
+}
+
+#upload-button span {
+	display: block;
+	width: 160px;
+	text-align: center;
+	margin: 20px 0 0 50px;
+	background: white;
+	border-radius: 10px;
+	font-size: 1.1em;
+	padding: 4px 0;
+	position: relative;
+}
+#upload-button a:hover {
+	box-shadow: 0 0 1000px 62px rgba(255, 255, 255, 1), inset 0 -5px 40px 0px #0A9FCA;	
+}
+
+#extra-files {
+	display: none;
+	float: left;
+	position: relative;
+}
+
+#extra-files .number {
+	background: rgba(0,0,0,0.6);
+	border-radius: 4px;
+	display: inline-block;
+	position: relative;
+	font-weight: bold;
+	color: #fff;
+	padding: 20px 30px;
+	margin: 60px 0 0 0;
+	cursor: pointer;
+	font-size: 30px;
+}
+
+#dropped-files #upload-button .delete {
+	padding: 7px 6px 4px 6px;
+	border-radius: 100px;
+	background: rgba(0,0,0,0.6);
+	box-shadow: none;
+	font-size: 1em;
+	margin-left: 8px;
+}
+
+#dropped-files #upload-button .delete:hover {
+	background: rgba(0,0,0,0.8);
+}
+
+
+#extra-files .number:after {
+	position: absolute;
+	content: " ";
+	top: 18px;
+	left: -40px;
+	display: block;
+	border: 20px solid;
+	border-color: transparent rgba(0, 0, 0, 0.6) transparent transparent;
+}
+
+#extra-files #file-list {
+	display: none;
+	background: white;
+	padding: 20px 0;
+	border-radius: 5px;
+	box-shadow: 0 0 15px rgba(0,0,0,0.1);
+	width: 250px;
+	top: 100px;
+	border: 1px solid #dadada;
+	left: -10px;
+	left: -16px;
+	max-height: 220px;
+	top: 150px;
+	position: absolute;
+	color: #545454;
+}
+
+#file-list ul {
+	overflow: scroll;
+	padding: 0;
+	border-top: 1px solid #dadada;
+	max-height: 200px;
+	width: 250px;
+	list-style: none;
+	border-bottom: 1px solid #dadada !important;
+}
+
+
+#file-list ul li:last-of-type {
+	border-bottom: 0 !important;
+}
+
+#uploaded-holder {
+	width: 100%;
+	height: 210px;
+	display: none;
+	text-align: center
+}
+
+#uploaded-holder >  a{
+	float:right;
+    clear: both;
+    margin: 5px;
+}
+
+#extra-files #file-list:after, #extra-files #file-list:before {
+	position: absolute;
+	content: " ";
+	top: -40px;
+	left: 40px;
+	display: block;
+	border: 20px solid;
+	border-color: transparent transparent #ffffff transparent;
+}
+
+#extra-files #file-list:before {
+	border-color: transparent transparent #dadada transparent;
+	top: -41px;
+}
+
+#extra-files #file-list li {
+	border-bottom: 1px solid #eee;
+	font-weight: bold;
+	font-size: 1.5em;
+	padding: 10px;
+}
+
+#loading {
+	display: none;
+	float: left;
+	width: 100%;
+	position: relative;
+}
+
+#loading-bar {
+	width: 404px;
+	height: 40px;
+	background: #fff;
+	box-shadow: 0 0 15px rgba(0,0,0,0.1);
+	border-radius: 5px;
+	padding: 2px;
+}
+
+.loading-color {
+	width: 0%;
+	height: 100%;
+	-webkit-transition: all 0.1s ease-in;
+	-moz-transition: all 0.1s ease-in;
+	-ms-transition: all 0.1s ease-in;
+	-o-transition: all 0.1s ease-in;
+	transition: all 0.1s ease-in;
+	border-radius: inherit;
+	background-color: #4edbf1;
+}
+
+#loading-content {
+	position: absolute;
+	top: 15px;
+	font-size: 1.2em;
+	font-weight: bold;
+	text-align: center;
+	width: 405px;
+}
+
+#file-name-holder {
+	width: 100%;
+	float: left;
+}
+
+#file-name-holder h1 {
+	text-align: center;
+	border-bottom: 1px solid #dadada;
+	padding: 20px 0;
+	font-size: 3em;
+	margin: 0;
+}
+
+#uploaded-files {
+	background: white;
+	border-radius: 5px;
+	box-shadow: 0 0 15px rgba(0,0,0,0.1);
+	width: 407px;
+	top: 100px;
+	padding: 0;
+	border: 1px solid #dadada;
+	max-height: 320px;
+	overflow: scroll;
+	color: #545454;
+}
+
+#uploaded-files li {
+	padding: 10px;
+	border-bottom: 1px solid #eee;
+	font-size: 1.5em;
+	font-weight: bold;
+	line-height: 25px;
+	color: #545454;
+}
+
+#uploaded-files a {
+	color: #1bacbf;
+}
+
+/* Resizing | Cropbox */
+
+.imageBox
+{
+    margin: auto;
+    position: relative;
+    height: 220px;
+    width: 220px;
+    border:1px solid #aaa;
+    background: #fff;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    cursor:move;
+}
+
+.imageBox .thumbBox
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 219px;
+    height: 219px;
+    margin-top: -110px;
+    margin-left: -110px;
+    box-sizing: border-box;
+    border: 1px solid rgb(102, 102, 102);
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+    background: none repeat scroll 0% 0% transparent;
+}
+
+.imageBox .spinner
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    line-height: 400px;
+    background: rgba(0,0,0,0.7);
+}
+
+.crop-container{
+    height: 227px;
+}
+
+.cropped{
+    position: absolute;
+}
+
+.action > a{
+    margin:  11px;
+}

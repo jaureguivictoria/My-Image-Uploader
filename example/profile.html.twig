@@ -1,0 +1,238 @@
+{% extends 'UakikaNFCBackendBundle:Base:new_base_layout.html.twig' %}
+
+{% set vars = {'file_selector': 'event_loyaltyImage', 'img_preview_selector':'event_image', 'form_id': 'profile-form'} %}
+
+{% block new_javascripts %}
+    {{parent()}}
+    
+    <script type="text/javascript" src="{{ asset('bundles/uakikanfcbackend/js/imageUploader.js') }}"></script>
+    <script type="text/javascript">
+    /* Image Uploader global vars */
+        var maxFiles = 1;
+        var maxSize = 500000;    
+    </script>
+
+     <script type="text/javascript">         
+
+        function deleteCustomerFans(){
+            $.ajax({
+                url : "{{url('backend_delete_customerFans')}}",
+                type : 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                async: false,
+                data : "",
+                beforeSend: function(){
+                    $.fancybox.showLoading();
+                },
+                success : function(response) {
+                    var obj = JSON.parse(response);
+                    if(obj.status){
+                        $.fancybox("<p class='align-center'>{{'profile.fans-deleted'|trans}}</p>");
+                    } else {
+                        $.fancybox("<p class='align-center'><strong>{{'profile.error'|trans}}</strong></p><p>"+obj.error+"</p>");
+                    }
+                },
+                complete: function(){
+                    $.fancybox.hideLoading();
+                },
+                error : function(request, status, error) {
+                    showToastMessage(false);
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block new_stylessheets %}
+    {{parent()}}
+    <link href="{{ asset('bundles/uakikanfcbackend/css/imageUploader.css')}}" rel="stylesheet">
+    <style>
+		.toast{padding-left:25% !important;}
+    </style>
+{% endblock %}
+
+{% block ready %}
+    showMyProfile();
+    
+    {% include 'UakikaNFCBackendBundle:ImageUploader:imageUploader-ready.html.twig' with vars %}
+    
+    showPreviewImageUploader();
+    // Load existent loyalty image
+    {% if app.session.get('event_image') is not empty %}
+        $("#event_image").attr("src","/upload/loyalty_images/{{ app.session.get('event_image')}}");
+    {% endif %}
+    
+    $("select#select_language option")
+   .each(function() { this.selected = (this.value == "{{actual_language}}"); });
+    
+    $('#profile-form').validate();
+
+    $("#changepass_currentpassword").rules("add", {
+        required: function(){
+                return ($("#changepass_password_first").val() != "");
+            }
+    });
+
+    $("#changepass_password_second").rules("add", {
+        equalTo: "#changepass_password_first" ,
+        messages: { equalTo: "{{'validator.passwords-dont-match'|trans}}"}
+    });
+
+    $("a.saveProfile").click(function(){
+
+        if($("#profile-form").valid()){
+
+            var formData = new FormData($("#profile-form")[0]);
+            formData.append("timezone", $("#select_timezone").val());
+            formData.append("language", $("#select_language").val());
+
+            $.ajax({
+                url : "{{url('backend_save_profile')}}",
+                type : 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                async: false,
+                data : formData,
+                beforeSend: function(){
+                    $.fancybox.showLoading();
+                },
+                success : function(response) {
+                    var result = JSON.parse(response);
+                    if(result.status != "0"){
+                        if(result.event_image != null){
+                            $("#event_image").attr("src","/upload/loyalty_images/"+result.event_image);
+                            $(".profile .thumb").attr("src", "/upload/loyalty_images/"+result.event_image);
+                            $(".profile .thumb").css("max-width", "40px");
+                        } else {                            
+                            $(".profile .thumb").attr("src", "{{ asset('bundles/uakikanfcbackend/images/thumb.gif')}}");
+                        }
+                        showToastMessage(true);
+                    } else {
+                        $.fancybox("<p class='align-center'><strong>{{'profile.error'|trans}}</strong></p><p>"+result.error+"</p>");
+                    }
+                },
+                complete: function(){
+                    $.fancybox.hideLoading();
+                },
+                error : function(request, status, error) {
+                    showToastErrorMessage();
+                }
+            });
+        } else {
+            $.fancybox.close();
+        }
+    });
+
+
+{% endblock %}
+
+{% block formstart %}
+    <form method="POST" id="profile-form" action="{{path('backend_save_profile')}}" {{ form_enctype(form) }}>
+        <input type="hidden" id="temp_image_id" name="temp_image_id" > 
+{% endblock %}
+
+{% block column1 %}
+	{% include 'UakikaNFCBackendBundle:Default:toast_message.html.twig' with { 'ok': 'profile.success'|trans, 'error': 'common.error'|trans } %}
+    <h1 class="title">{{'profile.title'|trans}}</h1>
+    <div class="content mCustomScrollbar">
+        <article>
+            <h2 class="subtitle">{{'common.basic'|trans}}</h2>
+            <div class="box">
+                <label class="label">{{'profile.image-title'|trans}}</label>
+                {% include 'UakikaNFCBackendBundle:ImageUploader:image_preview.html.twig' with vars %}
+                {% include 'UakikaNFCBackendBundle:ImageUploader:dropzone.html.twig' %}
+                {% include 'UakikaNFCBackendBundle:ImageUploader:cropbox.html.twig' %}                    
+                {% include 'UakikaNFCBackendBundle:ImageUploader:input_file_div.html.twig' with vars %}
+                <div class="field-wrapper">
+                    {{ form_widget(form.name,{'attr': {'placeholder': 'profile.name'|trans, value :  app.user.facebookName, 'class' : 'field', id : 'name'}}) }}
+                </div>
+            </div>
+        </article>
+        <article>
+            <h2 class="subtitle">{{'profile.password'|trans}}</h2>
+            <div class="box">
+                <div class="field-wrapper">
+                    {{ form_widget(form.currentpassword, {'attr': {'placeholder': 'profile.actual'|trans,  'class' : 'field', id : 'actual'}}) }}
+                </div>
+                <div class="field-wrapper">
+                    {{ form_widget(form.password.first, {'attr': {'placeholder': 'profile.new'|trans, 'class' : 'field', id : 'new'}}) }}
+                </div>
+                <div class="field-wrapper">
+                    {{ form_widget(form.password.second, {'attr': {'placeholder': 'profile.repeat'|trans, 'class' : 'field', id : 'repeat'}}) }}
+                </div>
+            </div>
+        </article>
+        <article>
+            <h2 class="subtitle">{{'profile.timezone'|trans}}</h2>
+            <div class="box">
+                <div class="field-wrapper">
+                    <select id="select_timezone" class="field">
+                        <option value="">{{'profile.select-timezone'|trans}}</option>
+                        {% for t in timezones %}
+                            <option {% if actual_timezone == t.zone %} selected {% endif %}
+                                value="{{ t.zone }}">{{ t.diff_from_GMT }}&nbsp;&nbsp;&nbsp;{{ t.zone }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field-wrapper">
+-                    <label>{{ 'profile.current-datetime'|trans}}: </label><input type="text" value="{{ now }}">
+-                </div>
+            </div>
+        </article>
+    </div>
+{% endblock %}
+
+{% block column2 %}
+    <h1 class="title">
+        <i class="fa "></i>
+    </h1>
+    <div class="content mCustomScrollbar">
+        <article>
+            <h2 class="subtitle">{{ 'lang.title'|trans}}</h2>
+            <div class="box">
+                <div class="field-wrapper">
+                    <select id="select_language" class="field">
+                        <option value="">{{'profile.select-language'|trans}}</option>
+                        <option value="en">{{'lang.en'|trans}}</option>
+                        <option value="es">{{'lang.es'|trans}}</option>                        
+                    </select>
+                </div>
+            </div>
+        </article>
+        <article>
+            <h2 class="subtitle">{{ 'profile.delete-fans-title'|trans}}</h2>
+            <div class="box">
+                <div class="field-wrapper">
+                    <a href="#deleteFans" class="button negative cancel fancybox" style="width: 520px;"><i class="fa fa-times-circle-o"></i>{{ 'profile.delete-fans-title'|trans}}</a>
+                    <div id="deleteFans" style="display:none">
+                        {{ 'profile.delete-fans-sure'|trans}}
+                        <div class="separator"></div>
+                        <a href="javascript:parent.$.fancybox.close();" class="button negative cancel"><i class="fa fa-times-circle-o"></i>{{'answer.no'|trans}}</a>
+                        <a href="javascript:deleteCustomerFans();" class="button positive save"><i class="fa fa-check-circle-o"></i>{{'answer.yes'|trans}}</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+    <article class="actions-box">
+        <div class="box dashed-top">
+            <a href="#" class="button positive"><i class="fa fa-eye"></i>{{'common.preview'|trans}}</a>
+            <div class="separator"></div>
+            <a href="#cancel-action" class="button negative cancel fancybox"><i class="fa fa-times-circle-o"></i>{{'common.cancel'|trans}}</a>
+            <div id="cancel-action" style="display:none">
+                <p class="text-align-center">{{'common.sure-cancel'|trans}}</p>
+                <div class="separator"></div>
+                <a href="javascript:parent.$.fancybox.close();" class="button negative cancel"><i class="fa fa-times-circle-o"></i>{{'answer.no'|trans}}</a>
+                <a href="javascript:location.reload();" class="button positive save"><i class="fa fa-check-circle-o"></i>{{'answer.yes'|trans}}</a>
+            </div>
+            <a href="#" class="button negative save saveProfile"><i class="fa fa-check-circle-o"></i>{{'common.save'|trans}}</a>
+        </div>
+    </article>
+{% endblock %}
+
+{% block formend %}
+    </form>
+{% endblock %}

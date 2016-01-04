@@ -1,0 +1,38 @@
+<div id="dnd-container" style="display:none;">
+    <div id="drop-files" ondragover="return false">
+        <span id="lbl">{{'fileapi.drop-here'|trans}}</span>
+        <span id="errorsize">{{'validator.image.size'|trans}}</span>
+        <span id="errormsg">{{'fileapi.lim-exceeded'|trans}}</span>
+    </div>
+    
+    <div id="uploaded-holder">
+        <div id="dropped-files">
+            <div id="upload-button">
+                <a href="#" class="upload" style="display:none;">{{'fileapi.upload'|trans}}</a>
+                <a href="#" class="delete" style="display:none;">{{'common.del'|trans}}</a>
+                
+            </div>
+        </div>
+        <div id="extra-files">
+            <div class="number">
+                {{'fileapi.0'|trans}}
+            </div>
+            <div id="file-list">
+                <ul></ul>
+            </div>
+        </div>
+    </div>
+    
+    <div id="loading">
+        <div id="loading-bar">
+            <div class="loading-color"> </div>
+        </div>
+        <div id="loading-content">{{'fileapi.uploading'|trans}}</div>
+    </div>
+    
+    <div id="file-name-holder" style="display:none;">
+        <ul id="uploaded-files" >
+            <h1>{{'fileapi.uploaded'|trans}}</h1>
+        </ul>
+    </div>
+</div>
