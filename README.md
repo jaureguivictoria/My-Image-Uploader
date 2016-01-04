@@ -1,6 +1,7 @@
-# README #
+# README - My Image Uploader Project
 
-### My Image Uploader Overview ###
+
+## Overview
 This repository hosts a personal project of mine called "My Image Uploader". It was built using Symfony PHP Framework, Doctrine ORM, JavaScript and Twig Templating Engine. It has also some css customizations. I have attached everything necessary in order to review the whole uploader, starting from the views (HTML, Js, CSS) all the way up to the PHP repository. 
 
 ## Folder structure
